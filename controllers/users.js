@@ -24,14 +24,18 @@ const updateProfile = asyncHandler(async (req, res) => {
   const user = await userModel.findByIdAndUpdate(
     req.user._id,
     { $set: { name, about } },
-    { new: true },
+    { new: true, runValidators: true },
   );
   res.send(user);
 });
 
 const updateAvatar = asyncHandler(async (req, res) => {
   const { avatar } = req.body;
-  const user = await userModel.findByIdAndUpdate(req.user._id, { $set: { avatar } }, { new: true });
+  const user = await userModel.findByIdAndUpdate(
+    req.user._id,
+    { $set: { avatar } },
+    { new: true, runValidators: true },
+  );
   res.send(user);
 });
 

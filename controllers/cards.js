@@ -28,7 +28,7 @@ const likeCard = asyncHandler(async (req, res, next) => {
   const card = await cardModel.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true },
+    { new: true, runValidators: true },
   ).orFail(() => next(createError(404, 'Карточка не найдена')));
   res.send(card);
 });
@@ -37,7 +37,7 @@ const dislikeCard = asyncHandler(async (req, res, next) => {
   const card = await cardModel.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true },
+    { new: true, runValidators: true },
   ).orFail(() => next(createError(404, 'Карточка не найдена')));
   res.send(card);
 });
