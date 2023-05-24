@@ -1,3 +1,4 @@
+const createError = require('http-errors');
 const userModel = require('../models/user');
 const asyncHandler = require('../middlewares/asyncHandler');
 
@@ -9,12 +10,7 @@ const getUsers = asyncHandler(async (req, res) => {
 const getUserById = asyncHandler(async (req, res, next) => {
   const user = await userModel
     .findById(req.params.userId)
-    .orFail(() => {
-      const err = new Error('User not found');
-      err.name = 'NotFoundError';
-
-      next(err);
-    });
+    .orFail(() => next(createError(404, 'Пользователь не найден')));
   res.send(user);
 });
 
@@ -25,7 +21,11 @@ const createUser = asyncHandler(async (req, res) => {
 
 const updateProfile = asyncHandler(async (req, res) => {
   const { name, about } = req.body;
-  const user = await userModel.findByIdAndUpdate(req.user._id, { $set: { name, about } }, { new: true });
+  const user = await userModel.findByIdAndUpdate(
+    req.user._id,
+    { $set: { name, about } },
+    { new: true },
+  );
   res.send(user);
 });
 
@@ -40,5 +40,5 @@ module.exports = {
   getUserById,
   createUser,
   updateProfile,
-  updateAvatar
+  updateAvatar,
 };

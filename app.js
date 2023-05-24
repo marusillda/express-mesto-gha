@@ -22,5 +22,6 @@ mongoose.connect('mongodb://0.0.0.0:27017/mestodb');
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
-  console.log(`App listening on port ${PORT}`)
-})
+  // eslint-disable-next-line
+  console.log(`App listening on port ${PORT}`);
+});
