@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const errorHandler = require('./middlewares/errorHandler');
+const notFoundPath = require('./middlewares/notFoundPath');
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
@@ -20,6 +21,8 @@ app.use((req, res, next) => {
 
 app.use(userRouter);
 app.use(cardRouter);
+
+app.use(notFoundPath);
 app.use(errorHandler);
 
 // подключаемся к серверу mongo

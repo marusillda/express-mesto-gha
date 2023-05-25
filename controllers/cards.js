@@ -12,7 +12,7 @@ const deleteCard = asyncHandler(async (req, res, next) => {
     .findById(req.params.cardId)
     .orFail(() => next(createError(404, 'Карточка не найдена')));
   await cardModel.deleteOne(card);
-  res.send();
+  res.send({});
 });
 
 const createCard = asyncHandler(async (req, res) => {
