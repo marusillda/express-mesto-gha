@@ -1,22 +1,20 @@
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
-    next(err);
+    return next(err);
   }
 
   switch (err.name) {
     case 'ValidationError':
     case 'BadRequestError':
-      res.status(400).json({
+      return res.status(400).json({
         message: err.message,
       });
-      break;
     case 'NotFoundError':
-      res.status(404).json({
+      return res.status(404).json({
         message: err.message,
       });
-      break;
     default:
-      res.status(500).json({
+      return res.status(500).json({
         message: err.message,
         stack: err.stack,
       });

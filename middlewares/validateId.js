@@ -6,9 +6,9 @@ const validateId = (req, res, next) => {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     next(createError(400, 'Параметр не является идентификатором'));
+  } else {
+    next();
   }
-
-  next();
 };
 
 module.exports = validateId;
