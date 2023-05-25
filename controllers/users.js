@@ -20,8 +20,7 @@ const getUserById = asyncHandler(async (req, res, next) => {
 
 const createUser = asyncHandler(async (req, res) => {
   const createdUser = await userModel.create(req.body);
-  res.status(HTTP_STATUS_CREATED);
-  res.send(createdUser);
+  res.status(HTTP_STATUS_CREATED).send(createdUser);
 });
 
 const updateUserModule = async (userId, data) => {

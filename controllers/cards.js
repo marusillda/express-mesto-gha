@@ -25,8 +25,7 @@ const createCard = asyncHandler(async (req, res) => {
     owner: req.user._id,
   };
   const createdCard = await cardModel.create(newCard);
-  res.status(HTTP_STATUS_CREATED);
-  res.send(createdCard);
+  res.status(HTTP_STATUS_CREATED).send(createdCard);
 });
 
 const likeCard = asyncHandler(async (req, res, next) => {
