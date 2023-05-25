@@ -5,6 +5,7 @@ const errorHandler = (err, req, res, next) => {
 
   switch (err.name) {
     case 'ValidationError':
+    case 'BadRequestError':
       res.status(400).json({
         message: err.message,
       });
