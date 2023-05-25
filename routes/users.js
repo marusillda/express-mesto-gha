@@ -4,12 +4,12 @@ const {
 } = require('../controllers/users');
 const validateId = require('../middlewares/validateId');
 
-router.get('/users', getUsers);
-router.get('/users/:userId', [validateId, getUserById]);
+router.get('/', getUsers);
+router.get('/:userId', [validateId, getUserById]);
 
-router.post('/users', createUser);
+router.post('/', createUser);
 
-router.patch('/users/me', updateProfile);
-router.patch('/users/me/avatar', updateAvatar);
+router.patch('/me', updateProfile);
+router.patch('/me/avatar', updateAvatar);
 
 module.exports = router; // экспортировали роутер

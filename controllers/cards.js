@@ -1,3 +1,7 @@
+const {
+  HTTP_STATUS_NOT_FOUND,
+  HTTP_STATUS_CREATED,
+} = require('node:http2').constants;
 const createError = require('http-errors');
 const cardModel = require('../models/card');
 const asyncHandler = require('../middlewares/asyncHandler');
@@ -10,7 +14,7 @@ const getCards = asyncHandler(async (req, res) => {
 const deleteCard = asyncHandler(async (req, res, next) => {
   const card = await cardModel
     .findById(req.params.cardId)
-    .orFail(() => next(createError(404, 'Карточка не найдена')));
+    .orFail(() => next(createError(HTTP_STATUS_NOT_FOUND, 'Карточка не найдена')));
   await cardModel.deleteOne(card);
   res.send({});
 });
@@ -21,6 +25,7 @@ const createCard = asyncHandler(async (req, res) => {
     owner: req.user._id,
   };
   const createdCard = await cardModel.create(newCard);
+  res.status(HTTP_STATUS_CREATED);
   res.send(createdCard);
 });
 
@@ -29,7 +34,7 @@ const likeCard = asyncHandler(async (req, res, next) => {
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true, runValidators: true },
-  ).orFail(() => next(createError(404, 'Карточка не найдена')));
+  ).orFail(() => next(createError(HTTP_STATUS_NOT_FOUND, 'Карточка не найдена')));
   res.send(card);
 });
 
@@ -38,7 +43,7 @@ const dislikeCard = asyncHandler(async (req, res, next) => {
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true, runValidators: true },
-  ).orFail(() => next(createError(404, 'Карточка не найдена')));
+  ).orFail(() => next(createError(HTTP_STATUS_NOT_FOUND, 'Карточка не найдена')));
   res.send(card);
 });
 

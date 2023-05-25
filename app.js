@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const userRouter = require('./routes/users');
-const cardRouter = require('./routes/cards');
+const router = require('./routes/index');
+
 const errorHandler = require('./middlewares/errorHandler');
 const notFoundPath = require('./middlewares/notFoundPath');
 
@@ -19,8 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(userRouter);
-app.use(cardRouter);
+app.use(router);
 
 app.use(notFoundPath);
 app.use(errorHandler);
