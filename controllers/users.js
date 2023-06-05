@@ -1,6 +1,10 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const {
   HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_CREATED,
+  HTTP_STATUS_UNAUTHORIZED,
 } = require('node:http2').constants;
 const createError = require('http-errors');
 const userModel = require('../models/user');
@@ -19,8 +23,21 @@ const getUserById = asyncHandler(async (req, res, next) => {
 });
 
 const createUser = asyncHandler(async (req, res) => {
-  const createdUser = await userModel.create(req.body);
+  const pwdHash = await bcrypt.hash(req.body.password, 10);
+  const userData = { ...req.body, password: pwdHash };
+  const createdUser = await userModel.create(userData);
   res.status(HTTP_STATUS_CREATED).send(createdUser);
+});
+
+const loginUser = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+  const user = await userModel.findOne({ email });
+  const compareResult = await bcrypt.compare(password, user.password);
+  if (!compareResult) {
+    return next(createError(HTTP_STATUS_UNAUTHORIZED, 'Пользователь не авторизован'));
+  }
+  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+  res.send({ token });
 });
 
 const updateUserModule = async (userId, data) => {
@@ -38,9 +55,10 @@ const updateProfile = asyncHandler(async (req, res) => {
   res.send(user);
 });
 
-const updateAvatar = asyncHandler(async (req, res) => {
+const updateAvatar = asyncHandler(async (req, res, next) => {
   const { avatar } = req.body;
-  const user = await updateUserModule(req.user._id, { avatar });
+  const user = await updateUserModule(req.user._id, { avatar })
+    .orFail(() => next(createError(HTTP_STATUS_UNAUTHORIZED, 'Пользователь не авторизован')));
   res.send(user);
 });
 
@@ -48,6 +66,7 @@ module.exports = {
   getUsers,
   getUserById,
   createUser,
+  loginUser,
   updateProfile,
   updateAvatar,
 };

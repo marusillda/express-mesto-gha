@@ -28,7 +28,7 @@ const errorHandler = (err, req, res, next) => {
   }
 
   return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json({
-    message: err.message,
+    message: 'На сервере произошла ошибка',
     stack: err.stack,
   });
 };
