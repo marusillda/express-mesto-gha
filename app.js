@@ -12,14 +12,6 @@ const { PORT = 3000 } = process.env;
 const app = express();
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '646df21c1b61f7bc647ec642', // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
-
-  next();
-});
-
 app.use(router);
 
 app.use(notFoundPath);

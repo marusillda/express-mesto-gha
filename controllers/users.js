@@ -31,13 +31,16 @@ const createUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-  const user = await userModel.findOne({ email });
+  const user = await userModel.findOne({ email }).select('+password');
+  if (!user) {
+    return next(createError(HTTP_STATUS_UNAUTHORIZED, 'Пользователь не авторизован'));
+  }
   const compareResult = await bcrypt.compare(password, user.password);
   if (!compareResult) {
     return next(createError(HTTP_STATUS_UNAUTHORIZED, 'Пользователь не авторизован'));
   }
-  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-  res.send({ token });
+  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, { expiresIn: '7d' });
+  return res.send({ token });
 });
 
 const updateUserModule = async (userId, data) => {
@@ -55,10 +58,16 @@ const updateProfile = asyncHandler(async (req, res) => {
   res.send(user);
 });
 
-const updateAvatar = asyncHandler(async (req, res, next) => {
+const updateAvatar = asyncHandler(async (req, res) => {
   const { avatar } = req.body;
-  const user = await updateUserModule(req.user._id, { avatar })
-    .orFail(() => next(createError(HTTP_STATUS_UNAUTHORIZED, 'Пользователь не авторизован')));
+  const user = await updateUserModule(req.user._id, { avatar });
+  res.send(user);
+});
+
+const getProfile = asyncHandler(async (req, res, next) => {
+  const user = await userModel
+    .findById(req.user._id)
+    .orFail(() => next(createError(HTTP_STATUS_NOT_FOUND, 'Пользователь не найден')));
   res.send(user);
 });
 
@@ -69,4 +78,5 @@ module.exports = {
   loginUser,
   updateProfile,
   updateAvatar,
+  getProfile,
 };
