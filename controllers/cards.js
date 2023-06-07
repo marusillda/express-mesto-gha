@@ -16,7 +16,7 @@ const deleteCard = asyncHandler(async (req, res, next) => {
   const card = await cardModel
     .findById(req.params.cardId)
     .orFail(() => next(createError(HTTP_STATUS_NOT_FOUND, 'Карточка не найдена')));
-  if (card.owner._id !== req.user._id) {
+  if (card.owner._id.toString() !== req.user._id) {
     return next(createError(HTTP_STATUS_FORBIDDEN, 'Нет прав на удаление карточки'));
   }
   await cardModel.deleteOne(card);
