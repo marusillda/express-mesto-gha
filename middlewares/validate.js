@@ -56,7 +56,7 @@ const validateAvatarData = celebrate(
             'http',
             'https',
           ],
-        })
+        }),
     }),
   },
 );

@@ -1,6 +1,7 @@
 const {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_CONFLICT,
 } = require('node:http2').constants;
 const mongoose = require('mongoose');
 
@@ -12,9 +13,16 @@ const errorHandler = (err, req, res, next) => {
 
   const isMongooseValidationError = err instanceof mongoose.Error.ValidationError;
   const isHttpBadRequestError = err.status === HTTP_STATUS_BAD_REQUEST;
+  const isMongoError = err instanceof mongoose.mongo.MongoError;
 
   if (isMongooseValidationError || isHttpBadRequestError) {
     return res.status(HTTP_STATUS_BAD_REQUEST).json({
+      message: err.message,
+    });
+  }
+
+  if (isMongoError) {
+    return res.status(HTTP_STATUS_CONFLICT).json({
       message: err.message,
     });
   }
