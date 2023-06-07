@@ -1,4 +1,5 @@
 const express = require('express');
+const { errors } = require('celebrate');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const router = require('./routes/index');
@@ -13,8 +14,9 @@ const app = express();
 app.use(express.json());
 
 app.use(router);
-
+app.use(errors());
 app.use(notFoundPath);
+
 app.use(errorHandler);
 
 // подключаемся к серверу mongo
