@@ -12,7 +12,12 @@ const validateRegistrationData = celebrate(
         .max(30)
         .default('Исследователь'),
       avatar: Joi.string()
-        .uri()
+        .uri({
+          scheme: [
+            'http',
+            'https',
+          ],
+        })
         .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
       email: Joi.string()
         .required()
@@ -45,7 +50,13 @@ const validateProfileData = celebrate(
 const validateAvatarData = celebrate(
   {
     body: Joi.object().keys({
-      avatar: Joi.string().uri(),
+      avatar: Joi.string()
+        .uri({
+          scheme: [
+            'http',
+            'https',
+          ],
+        })
     }),
   },
 );
@@ -53,8 +64,18 @@ const validateAvatarData = celebrate(
 const validateCreateCardData = celebrate(
   {
     body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      link: Joi.string().required().uri(),
+      name: Joi.string()
+        .required()
+        .min(2)
+        .max(30),
+      link: Joi.string()
+        .required()
+        .uri({
+          scheme: [
+            'http',
+            'https',
+          ],
+        }),
     }),
   },
 );
