@@ -84,7 +84,8 @@ const validateUserIdParam = celebrate(
   {
     params: Joi.object().keys({
       userId: Joi.string()
-        .guid({ separator: false })
+        .alphanum()
+        .length(24)
         .required(),
     }),
   },
@@ -94,7 +95,8 @@ const validateCardIdParam = celebrate(
   {
     params: Joi.object().keys({
       cardId: Joi.string()
-        .guid({ separator: false })
+        .alphanum()
+        .length(24)
         .required(),
     }),
   },
