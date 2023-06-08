@@ -80,10 +80,28 @@ const validateCreateCardData = celebrate(
   },
 );
 
+const validateUserIdParam = celebrate(
+  {
+    params: Joi.object().keys({
+      userId: Joi.string().guid().required(),
+    }),
+  },
+);
+
+const validateCardIdParam = celebrate(
+  {
+    params: Joi.object().keys({
+      cardId: Joi.string().guid().required(),
+    }),
+  },
+);
+
 module.exports = {
   validateRegistrationData,
   validateLoginData,
   validateProfileData,
   validateAvatarData,
   validateCreateCardData,
+  validateUserIdParam,
+  validateCardIdParam,
 };
