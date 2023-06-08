@@ -1,5 +1,7 @@
 const { celebrate, Joi } = require('celebrate');
 
+const linkRegexp = /((?:https?:\/\/|www\.)(?:[-a-z0-9]+\.)*[-a-z0-9]+.*)/i;
+
 const validateRegistrationData = celebrate(
   {
     body: Joi.object().keys({
@@ -51,12 +53,8 @@ const validateAvatarData = celebrate(
   {
     body: Joi.object().keys({
       avatar: Joi.string()
-        .uri({
-          scheme: [
-            'http',
-            'https',
-          ],
-        }),
+        .pattern(linkRegexp)
+        .required(),
     }),
   },
 );
@@ -69,13 +67,8 @@ const validateCreateCardData = celebrate(
         .min(2)
         .max(30),
       link: Joi.string()
-        .required()
-        .uri({
-          scheme: [
-            'http',
-            'https',
-          ],
-        }),
+        .pattern(linkRegexp)
+        .required(),
     }),
   },
 );
